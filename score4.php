@@ -1,5 +1,5 @@
 <?php
- 
+
 ini_set('display_errors', 'on');
 
 require_once "lib/dbconnect.php";
@@ -18,7 +18,7 @@ case 'board' :
     case '':
     case null: handle_board($method);
         break;
-    case 'piece': handle_piece($method, $request[0], $request[1], $input);
+    case 'column': handle_column($method, $request[0]);
         break;
     default: header("HTTP/1.1 404 Not Found");
         break;
@@ -30,7 +30,7 @@ case 'status':
     else {header("HTTP/1.1 404 Not Found");
     }
     break;
-case 'players': handle_player($method, $request, $input);
+case 'players': handle_player($method, $request);
     break;
 default:  header("HTTP/1.1 404 Not Found");
     exit;
@@ -40,7 +40,9 @@ function handle_board($method)
 {
  
     if($method=='GET') {
-            show_board();
+        print_board();    
+        show_board();
+            
     } else if ($method=='POST') {
             reset_board();
         show_board();
@@ -48,9 +50,13 @@ function handle_board($method)
         
 }
 
-function handle_piece($method, $x,$y,$input)
+function handle_column($method, $col)
 {
-    ;
+    if($method=='GET') {
+        show_column($col);
+    } else if ($method=='PUT') {
+        place_piece($col);
+    }    
 }
  
 function handle_player($method, $request,$input)
