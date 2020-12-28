@@ -18,7 +18,7 @@ case 'board' :
     case '':
     case null: handle_board($method);
         break;
-    case 'column': handle_column($method, $request[0]);
+    case 'column': handle_column($method, $request[0], $request[1]);
         break;
     default: header("HTTP/1.1 404 Not Found");
         break;
@@ -41,21 +41,25 @@ function handle_board($method)
  
     if($method=='GET') {
         print_board();    
-        show_board();
+        //show_board();
             
     } else if ($method=='POST') {
-            reset_board();
-        show_board();
+        reset_board();
+        print_board();
     }
         
 }
 
-function handle_column($method, $col)
+function handle_column($method, $col, $symbol)
 {
     if($method=='GET') {
         show_column($col);
     } else if ($method=='PUT') {
-        place_piece($col);
+        if ($col >= 1 and $col <= 7) {
+            place_piece($col, $symbol);
+        }else{
+            echo "Invalid Input. Please select between 1-7.";
+        }
     }    
 }
  
