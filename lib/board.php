@@ -104,23 +104,20 @@ function place_piece($col, $symbol)
 
     //Check if this is the winning move
     if(winning_move($symbol)) {
-        echo "Player " . $symbol . " won!";
+        echo "Player " . $symbol . " wins!";
     }
 }
 
 function insert_piece($x, $y, $symbol)
 {
     global $mysqli;
-    
-    $sql1 = "UPDATE `adise20`.`board` SET `symbol` = '";
-    $sql2 = "' WHERE (`x` = '";
-    $sql3 = "') and (`y` = '";
-    $sql4 = "');";
 
-    $sql = $sql1 . $symbol . $sql2 . $x . $sql3 . $y . $sql4;
-    echo "\n*!* Executing Query: " . $sql ."\n";
+    $sql = 'update `adise20`.`board` SET `symbol` = ? where (`x` = ?) and (`y` = ?);';
+
+    //echo "\n*!* Executing Query: " . $sql ."\n";
     
     $st = $mysqli->prepare($sql);
+    $st->bind_param('sss', $symbol, $x, $y);
     $st->execute();
 }
 
