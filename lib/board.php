@@ -55,6 +55,7 @@ function reset_board()
     global $mysqli;
     $sql = 'call clear_board()';
     $mysqli->query($sql);
+    update_game_status();
 }
 
 function print_board()
@@ -85,8 +86,34 @@ function show_column($col)
     ;
 }
 
-function place_piece($col, $symbol)
+function place_piece($col, $token)
 {
+    global $mysqli;
+
+    if($token==null || $token=='') {
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"token is not set."]);
+        exit;
+    }
+    
+    $symbol = current_symbol($token);
+    if($symbol==null ) {
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"You are not a player of this game."]);
+        exit;
+    }
+    $status = read_status();
+    if($status['status']!='started') {
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"Game is not in action."]);
+        exit;
+    }
+    if($status['p_turn']!=$symbol) {
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"It is not your turn."]);
+        exit;
+    }
+    
     $board = read_board("array");
 
     //Check for filled column
@@ -95,29 +122,56 @@ function place_piece($col, $symbol)
             if ($board [$i][$col - 1] == "-") {
                 insert_piece($i + 1, $col, $symbol);
                 break;
-            };
+            }
         }
     }else{
-        echo "\nMESSAGE: This column (" .$col . ") is full! Try another one.\n";
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"This column (" .$col . ") is full! Try another one."]);
     }
     print_board();
 
     //Check if this is the winning move
     if(winning_move($symbol)) {
-        echo "Player " . $symbol . " wins!";
+        $sql = 'select player from players where token=?';
+        $st = $mysqli->prepare($sql);
+        $st->bind_param('s', $token);
+        $st->execute();
+        $res = $st->get_result();
+        $row=$res->fetch_assoc();
+        echo "Player " . $row['player'] . " wins!";
+        $sql = 'update game_status set status="ended", result=?;';
+        $st = $mysqli->prepare($sql);
+        $st->bind_param('s', $symbol);
+        $st->execute();
     }
+    exit;
+
+    header("HTTP/1.1 400 Bad Request");
+    print json_encode(['errormesg'=>"This move is illegal."]);
+    exit;
+    
 }
+
 
 function insert_piece($x, $y, $symbol)
 {
     global $mysqli;
 
     $sql = 'update `adise20`.`board` SET `symbol` = ? where (`x` = ?) and (`y` = ?);';
-
     //echo "\n*!* Executing Query: " . $sql ."\n";
-    
     $st = $mysqli->prepare($sql);
     $st->bind_param('sss', $symbol, $x, $y);
+    $st->execute();
+
+    //Update Game Status Board
+    if ($symbol == "O") {
+        $newsymbol = "X";
+    }else if ($symbol == "X") {
+        $newsymbol = "O";
+    }
+    $sql = 'update game_status set p_turn=?;';
+    $st = $mysqli->prepare($sql);
+    $st->bind_param('s', $newsymbol);
     $st->execute();
 }
 

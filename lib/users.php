@@ -41,9 +41,9 @@ function set_user($b,$input)
         print json_encode(['errormesg'=>"Player $b is already set. Please select another symbol."]);
         exit;
     }
-    $sql = 'update players set player=? where symbol=?';
+    $sql = 'update players set player=?, token=md5(CONCAT( ?, NOW())) where symbol=?';
     $st2 = $mysqli->prepare($sql);
-    $st2->bind_param('ss', $player, $b);
+    $st2->bind_param('sss', $player, $player, $b);
     $st2->execute();
     
     update_game_status();
@@ -68,4 +68,20 @@ function handle_user($method, $b, $input)
     }
 }
 
+function current_symbol($token)
+{
+    
+    global $mysqli;
+    if($token==null) {return(null);
+    }
+    $sql = 'select * from players where token=?';
+    $st = $mysqli->prepare($sql);
+    $st->bind_param('s', $token);
+    $st->execute();
+    $res = $st->get_result();
+    if($row=$res->fetch_assoc()) {
+        return($row['symbol']);
+    }
+    return(null);
+}
 ?>

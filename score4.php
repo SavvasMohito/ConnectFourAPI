@@ -18,7 +18,7 @@ case 'board' :
     case '':
     case null: handle_board($method);
         break;
-    case 'column': handle_column($method, $request[0], $request[1]);
+    case 'column': handle_column($method, $request[0], $input);
         break;
     default: header("HTTP/1.1 404 Not Found");
         break;
@@ -50,15 +50,16 @@ function handle_board($method)
         
 }
 
-function handle_column($method, $col, $symbol)
+function handle_column($method, $col, $input)
 {
     if($method=='GET') {
         show_column($col);
     } else if ($method=='PUT') {
         if ($col >= 1 and $col <= 7) {
-            place_piece($col, $symbol);
+            place_piece($col, $input['token']);
         }else{
-            echo "Invalid Input. Please select between 1-7.";
+            header("HTTP/1.1 400 Bad Request");
+            print json_encode(['errormesg'=>"Invalid Input. Please select between 1-7."]);
         }
     }    
 }
