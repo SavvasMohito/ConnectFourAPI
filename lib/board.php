@@ -124,32 +124,35 @@ function place_piece($col, $token)
                 break;
             }
         }
+        
+        print_board();
+        //Check if this is the winning move
+        if(winning_move($symbol)) {
+            $sql = 'select player from players where token=?';
+            $st = $mysqli->prepare($sql);
+            $st->bind_param('s', $token);
+            $st->execute();
+            $res = $st->get_result();
+            $row=$res->fetch_assoc();
+            echo "Player " . $row['player'] . " wins!";
+            $sql = 'update game_status set status="ended", result=?;';
+            $st = $mysqli->prepare($sql);
+            $st->bind_param('s', $symbol);
+            $st->execute();
+            exit;
+        }
+
+        if(check_draw()) {
+            $sql = 'update game_status set status="ended", result="D";';
+            $st = $mysqli->prepare($sql);
+            $st->execute();
+            exit;
+        }
+
     }else{
         header("HTTP/1.1 400 Bad Request");
         print json_encode(['errormesg'=>"This column (" .$col . ") is full! Try another one."]);
     }
-    print_board();
-
-    //Check if this is the winning move
-    if(winning_move($symbol)) {
-        $sql = 'select player from players where token=?';
-        $st = $mysqli->prepare($sql);
-        $st->bind_param('s', $token);
-        $st->execute();
-        $res = $st->get_result();
-        $row=$res->fetch_assoc();
-        echo "Player " . $row['player'] . " wins!";
-        $sql = 'update game_status set status="ended", result=?;';
-        $st = $mysqli->prepare($sql);
-        $st->bind_param('s', $symbol);
-        $st->execute();
-    }
-    exit;
-
-    header("HTTP/1.1 400 Bad Request");
-    print json_encode(['errormesg'=>"This move is illegal."]);
-    exit;
-    
 }
 
 
@@ -211,6 +214,22 @@ function winning_move($piece)
                 return true;
             }
         }
+    }
+}
+
+function check_draw()
+{
+    $board = read_board("array");
+    $counter = 0;
+    for ($j = 0; $j < 7; $j++){
+        if ($board[0][$j] != "-") {
+            $counter += 1;
+        }
+    }
+    if ($counter == 7) {
+        return true;
+    }else{
+        return false;
     }
 }
 ?>
