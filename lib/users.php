@@ -47,7 +47,6 @@ function set_user($b,$input)
     $st2->execute();
     
     update_game_status();
-    //echo $input['player'];
     $sql = 'select * from players where symbol=?';
     $st = $mysqli->prepare($sql);
     $st->bind_param('s', $b);

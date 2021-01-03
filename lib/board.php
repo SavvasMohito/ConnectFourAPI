@@ -60,6 +60,8 @@ function reset_board()
 
 function print_board()
 {
+    global $mysqli;
+
     $board = read_board("array");
 
     // Print column numbers
@@ -78,7 +80,12 @@ function print_board()
             }
         }
     }
-    
+    $sql = 'select * from game_status;';
+    $st = $mysqli->prepare($sql);
+    $st->execute();
+    $res = $st->get_result();
+    $row=$res->fetch_assoc();
+    echo "\nGame Status: " . $row['status'] . ". Waiting for player " . $row['p_turn'] . " to play.";
 }
 
 function show_column($col)
@@ -97,7 +104,7 @@ function place_piece($col, $token)
     }
     
     $symbol = current_symbol($token);
-    if($symbol==null ) {
+    if($symbol==null) {
         header("HTTP/1.1 400 Bad Request");
         print json_encode(['errormesg'=>"You are not a player of this game."]);
         exit;
@@ -134,18 +141,14 @@ function place_piece($col, $token)
             $st->execute();
             $res = $st->get_result();
             $row=$res->fetch_assoc();
-            echo "Player " . $row['player'] . " wins!";
-            $sql = 'update game_status set status="ended", result=?;';
-            $st = $mysqli->prepare($sql);
-            $st->bind_param('s', $symbol);
-            $st->execute();
+            echo "\nGame Ended! Result: Player " . $row['player'] . " wins!";
+            end_game($symbol);
             exit;
         }
 
         if(check_draw()) {
-            $sql = 'update game_status set status="ended", result="D";';
-            $st = $mysqli->prepare($sql);
-            $st->execute();
+            echo "\nGame Ended! Result: DRAW! No winners. :(";
+            end_game("D");
             exit;
         }
 
@@ -231,5 +234,21 @@ function check_draw()
     }else{
         return false;
     }
+}
+
+function end_game($result)
+{
+    global $mysqli;
+
+    $sql = 'update game_status set status="ended", result=?;';
+    $st = $mysqli->prepare($sql);
+    $st->bind_param('s', $result);
+    $st->execute();
+
+    $sql = 'update players set player=NULL, token=NULL, last_action=NULL';
+    $st = $mysqli->prepare($sql);
+    $st->execute();
+
+    reset_board();
 }
 ?>

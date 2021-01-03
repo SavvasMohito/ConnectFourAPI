@@ -72,12 +72,17 @@ function update_game_status()
     switch($active_players) {
     case 0: $new_status='inactive'; 
         break;
-    case 1: $new_status='initialized'; 
+    case 1: $new_status='initialized';
+        $sql = 'select * from players where player is not null';
+        $st = $mysqli->prepare($sql);
+        $st->execute();
+        $res = $st->get_result();
+        $new_turn = $res->fetch_assoc()['symbol'];
         break;
     case 2: $new_status='started'; 
-        //if($status['p_turn']==null) {
+        if($status['p_turn']==null) {
             $new_turn='O'; // It was not started before...
-        //}
+        }
         break;
     }
 
