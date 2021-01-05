@@ -38,11 +38,10 @@ default:  header("HTTP/1.1 404 Not Found");
 
 function handle_board($method)
 {
- 
+    update_game_status();
     if($method=='GET') {
-        print_board();    
         //show_board();
-            
+        print_board();    
     } else if ($method=='POST') {
         reset_board();
         print_board();
@@ -52,6 +51,7 @@ function handle_board($method)
 
 function handle_column($method, $col, $input)
 {
+    update_game_status();
     if($method=='GET') {
         show_column($col);
     } else if ($method=='PUT') {
@@ -66,7 +66,7 @@ function handle_column($method, $col, $input)
  
 function handle_player($method, $request, $input)
 {
-    //echo $request;
+    update_game_status();
     switch ($b=array_shift($request)) {
     case '':
     case null: if($method=='GET') {show_users($method);
@@ -85,5 +85,3 @@ function handle_player($method, $request, $input)
         break;
     }
 }
- 
-?>

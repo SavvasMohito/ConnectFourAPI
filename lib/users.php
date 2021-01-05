@@ -41,7 +41,7 @@ function set_user($b,$input)
         print json_encode(['errormesg'=>"Player $b is already set. Please select another symbol."]);
         exit;
     }
-    $sql = 'update players set player=?, token=md5(CONCAT( ?, NOW())) where symbol=?';
+    $sql = 'update players set player=?, token=md5(CONCAT( ?, NOW())), last_action=NOW() where symbol=?';
     $st2 = $mysqli->prepare($sql);
     $st2->bind_param('sss', $player, $player, $b);
     $st2->execute();

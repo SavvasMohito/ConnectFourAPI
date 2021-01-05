@@ -55,11 +55,11 @@ function reset_board()
     global $mysqli;
     $sql = 'call clear_board()';
     $mysqli->query($sql);
-    update_game_status();
 }
 
 function print_board()
 {
+    update_game_status();
     global $mysqli;
 
     $board = read_board("array");
@@ -80,17 +80,29 @@ function print_board()
             }
         }
     }
-    $sql = 'select * from game_status;';
-    $st = $mysqli->prepare($sql);
-    $st->execute();
-    $res = $st->get_result();
-    $row=$res->fetch_assoc();
-    echo "\nGame Status: " . $row['status'] . ". Waiting for player " . $row['p_turn'] . " to play.";
+    $status = read_status();
+    echo "\nGame Status: " . $status['status'];
+    if ($status['status'] != "started") {
+        echo ". Waiting for players to join.";
+    }else{
+        echo ". Waiting for player " . $status['p_turn'] . " to play.";
+    }
 }
 
 function show_column($col)
 {
-    ;
+    global $mysqli;
+
+    $sql = 'select * from board where y=?';
+    $st = $mysqli->prepare($sql);
+    $st->bind_param('s', $col);
+    $st->execute();
+    $res = $st->get_result();
+    $column = $res->fetch_all(MYSQLI_ASSOC);
+
+    header('Content-type: application/json');
+    $js_enc = json_encode($column, JSON_PRETTY_PRINT);
+    print $js_enc;
 }
 
 function place_piece($col, $token)
@@ -132,7 +144,14 @@ function place_piece($col, $token)
             }
         }
         
+        //Update Player's Last Change
+        $sql = 'update players set last_action = NOW() where token=?';
+        $st = $mysqli->prepare($sql);
+        $st->bind_param('s', $token);
+        $st->execute();
+
         print_board();
+
         //Check if this is the winning move
         if(winning_move($symbol)) {
             $sql = 'select player from players where token=?';
@@ -234,21 +253,5 @@ function check_draw()
     }else{
         return false;
     }
-}
-
-function end_game($result)
-{
-    global $mysqli;
-
-    $sql = 'update game_status set status="ended", result=?;';
-    $st = $mysqli->prepare($sql);
-    $st->bind_param('s', $result);
-    $st->execute();
-
-    $sql = 'update players set player=NULL, token=NULL, last_action=NULL';
-    $st = $mysqli->prepare($sql);
-    $st->execute();
-
-    reset_board();
 }
 ?>
