@@ -51,8 +51,35 @@ player | Player's Name | yes
 Sets the Player on the selected symbol (if available) and returns a token. This token must be saved and used in every round the player plays as an authentication method.
 
 ### Status
-**Read Game Status***
+**Read Game Status**
 ```
 GET /status/
 ```
 Returns the Game Status.
+
+## Entities
+### Board
+Board is a table which contains the following:
+Attribute | Description | Values
+--------- | ----------- | ------
+x | 'x' coordinate of the slot | 1..6
+y | 'y' coordinate of the slot | 1..7
+symbol | Symbol placed in the slot | 'O', 'X', null
+
+### Players
+Each Player has the following:
+Attribute | Description | Values
+--------- | ----------- | ------
+player | Player's name | String
+symbol | Player's selected Symbol| 'O', 'X'
+token | Secret token acquired when the player gets set | HEX
+last_action | Timestamp with the player's last action | timestamp
+
+### Game Status
+The Game's Status is described by the following:
+Attribute | Description | Values
+--------- | ----------- | ------
+status | Current status of the game | 'inactive', 'initialized', 'started', 'ended', 'aborted'
+p_turn | Symbol of the player's turn | 'O', 'X', null
+result | Symbol of the winner | 'O', 'X', null
+last_change | Timestamp with the game's latest change | timestamp
