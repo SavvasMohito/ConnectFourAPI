@@ -1,4 +1,10 @@
 # Score 4 (aka Connect Four) API and cmd Game
+## Description
+This game (api) was developed as a project for one of my academical subjects. It is available to play only via the cmd by making HTTP Requests to the game's link you'll find below.
+
+### IMPORTANT!
+Apart from the JSON results you'll get by making the HTTP requests, I also developed a text visual representation of the game's board for easier gameplay.
+
 ## Game Rules
 There is a board with 6 rows and 7 columns. 2 users are playing one after the other. In each turn, the user selects one column to insert his piece in. Each column represent a stack, so it gets filled from the bottom to the top. The first player who manages to align 4 of his pieces in any way possible (vertically, horizontally or diagonally) wins the game!
 
@@ -11,7 +17,7 @@ https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/
 ## How to Play
 1. Copy the game link above.
 2. Open the cmd/terminal in your OS.
-3. Use the curl command as follows:
+3. Use the curl command as follows and make HTTP Request (GET, POST and PUT):
 ```
 curl https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/
 ```
@@ -35,6 +41,8 @@ curl -X PUT -H "Content-Type: application/json" -d "{ \"token\": \"token_number\
 ```
 curl -X PUT -H "Content-Type: application/json" -d "{ "token": "token_number" }" https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/board/column/:x
 ```
+## How it was made
+This game was developed by me as an individual using php for the API and MySQL for the database.
 
 # API Showcase
 ## Methods
@@ -98,7 +106,14 @@ Sets the Player on the selected symbol (if available) and returns a token. This 
 ```
 GET /status/
 ```
-Returns the Game Status.
+Returns the Game Status which can have one of the following states:
+Status | No of Players | Description
+------ | ------------- | -----------
+inactive | 0 | Waiting for players to join
+initialized | 1 | Waiting for the second player
+started | 2 | All players joined and game started
+ended | 2 -> 0 | A player won and the game automatically kicked all players
+aborted | 1 | An active player left. The other player won
 
 ## Entities
 ### Board
