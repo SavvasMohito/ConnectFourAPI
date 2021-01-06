@@ -183,7 +183,7 @@ function insert_piece($x, $y, $symbol)
     global $mysqli;
 
     $sql = 'update `adise20`.`board` SET `symbol` = ? where (`x` = ?) and (`y` = ?);';
-    //echo "\n*!* Executing Query: " . $sql ."\n";
+    
     $st = $mysqli->prepare($sql);
     $st->bind_param('sss', $symbol, $x, $y);
     $st->execute();

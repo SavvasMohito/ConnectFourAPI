@@ -40,10 +40,11 @@ function handle_board($method)
 {
     update_game_status();
     if($method=='GET') {
-        //show_board();
+        show_board();
         print_board();    
     } else if ($method=='POST') {
         reset_board();
+        show_board();
         print_board();
     }
         
@@ -52,16 +53,17 @@ function handle_board($method)
 function handle_column($method, $col, $input)
 {
     update_game_status();
-    if($method=='GET') {
-        show_column($col);
-    } else if ($method=='PUT') {
-        if ($col >= 1 and $col <= 7) {
+    if ($col >= 1 and $col <= 7) {
+        if($method=='GET') {
+            show_column($col);
+        } else if ($method=='PUT') {
             place_piece($col, $input['token']);
-        }else{
-            header("HTTP/1.1 400 Bad Request");
-            print json_encode(['errormesg'=>"Invalid Input. Please select between 1-7."]);
         }
-    }    
+    }else{
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"Invalid Input. Please select between 1-7."]);
+    }
+      
 }
  
 function handle_player($method, $request, $input)
@@ -77,7 +79,6 @@ function handle_player($method, $request, $input)
         break;
     case 'O': 
     case 'X': 
-        //echo $input;
         handle_user($method, $b, $input);
         break;
     default: header("HTTP/1.1 404 Not Found");
