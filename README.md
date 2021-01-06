@@ -42,7 +42,7 @@ curl -X PUT -H "Content-Type: application/json" -d "{ \"token\": \"token_number\
 curl -X PUT -H "Content-Type: application/json" -d "{ "token": "token_number" }" https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/board/column/:x
 ```
 ## How it was made
-This game was developed by me as an individual using php for the API and MySQL for the database.
+This game was developed by myself using php for the API and MySQL for the database.
 
 # API Showcase
 ## Methods
