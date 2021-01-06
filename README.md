@@ -1,7 +1,9 @@
 # Project Description
 ## Game Rules
 There is a board with 6 rows and 7 columns. 2 users are playing one after the other. In each turn, the user selects one column to insert his piece in. Each column represent a stack, so it gets filled from the bottom to the top. The first player who manages to align 4 of his pieces in any way possible (vertically, horizontally or diagonally) wins the game!
+
 ![](https://upload.wikimedia.org/wikipedia/commons/a/ad/Connect_Four.gif)
+
 ## Link of the Game
 ```
 https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/
