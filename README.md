@@ -88,7 +88,7 @@ Returns all players' information (username and symbol).
 ```
 GET /players/:p
 ```
-Returns selected (:p) player's information. :p can be either 'O' or 'X'.
+Returns selected (:p) player's information. :p can either be 'O' or 'X'.
 
 **Set new Player**
 ```
@@ -99,7 +99,7 @@ Field | Description | Required
 ----- | ----------- | --------
 player | Player's Name | yes
 
-Sets the Player on the selected symbol (if available) and returns a token. This token must be saved and used in every round the player plays as an authentication method.
+Sets the Player on the selected symbol :p ('O' or 'X', if available) and returns a token. This token must be saved and used by the player in every round as an authentication method.
 
 ### Status
 **Read Game Status**
