@@ -113,7 +113,7 @@ inactive | 0 | Waiting for players to join
 initialized | 1 | Waiting for the second player
 started | 2 | All players joined and game started
 ended | 2 -> 0 | A player won and the game automatically kicked all players
-aborted | 1 | An active player left. The other player won
+aborted | 1 | An active player left or was kicked for inactivity (5 minutes). The other player won
 
 ## Entities
 ### Board
