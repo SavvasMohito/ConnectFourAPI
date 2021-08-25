@@ -1,7 +1,12 @@
 # Score 4 (aka Connect Four) API and cmd Game
 
 ## UPDATE 2021
-This project serves code demonstration purposes only. The game is no longer playable due to my university's server reset but I may host it myself in the future.
+This project serves code demonstration purposes only.
+
+<s>The game is no longer playable due to my university's server reset but I may host it myself in the future.</s>
+
+The game can still be accessed but -k parameter is required when running curl commands, in order to avoid checking SSL Certificate validity.
+
 
 ## Description
 This game (api) was developed as a project for one of my academical subjects. It is available to play only via the cmd by making HTTP Requests to the game's link you'll find below.
