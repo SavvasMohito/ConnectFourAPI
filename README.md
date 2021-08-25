@@ -39,7 +39,7 @@ curl -X PUT -H "Content-Type: application/json" -d "{ \"player\": \"player_name\
 ```
 - For Linux/MacOS Users:
 ```
-curl -X PUT -H "Content-Type: application/json" -d "{ "player": "player_name" }" https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/players/:p
+curl -X PUT -H 'Content-Type: application/json' -d '{ "player": "player_name" }' https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/players/:p
 ```
 2. Fill a column using your token (:x = Selected Column. Can be 1..7)
 - For Windows Users:
@@ -48,7 +48,7 @@ curl -X PUT -H "Content-Type: application/json" -d "{ \"token\": \"token_number\
 ```
 - For Linux/MacOS Users:
 ```
-curl -X PUT -H "Content-Type: application/json" -d "{ "token": "token_number" }" https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/board/column/:x
+curl -X PUT -H 'Content-Type: application/json' -d '{ "token": "token_number" }' https://users.iee.ihu.gr/~it174883/adise20/ADISE20_174883/score4.php/board/column/:x
 ```
 ## How it was made
 This game was developed by myself using php for the API and MySQL for the database.
